@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: app_node_v1
+    build: .
+
+    ports:
+      - 80:000
+
+
+    environment:
+      TEST: "ANY"
+
+            
+    
