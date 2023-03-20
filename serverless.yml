@@ -1,0 +1,39 @@
+service: ${env:NAME_REPOSITORY_CUSTOM}-${sls:stage}
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  memorySize: 1024 # optional, in MB, default is 1024
+  timeout: 900
+  ecr:
+    # In this section you can define images that will be built locally and uploaded to ECR
+    images:
+      appimage:
+        path: ./
+  region: us-east-1
+  endpointType: REGIONAL
+  stage: ${opt:stage, "dev"}
+  deploymentBucket:
+    name: ilinkzi-staging
+
+custom:
+  stages:
+    - dev
+    - prd
+
+functions:
+  app:
+    image:
+      name: appimage
+    name: ${env:NAME_REPOSITORY_CUSTOM}-${sls:stage}
+
+    environment:
+      STAGE: ${self:provider.stage}
+
+
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
